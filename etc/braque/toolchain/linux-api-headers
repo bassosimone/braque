@@ -1,0 +1,23 @@
+pkg_full_name=linux-4.4.2
+pkg_tarball=https://cdn.kernel.org/pub/linux/kernel/v4.x/$pkg_full_name.tar.xz
+pkg_signature=https://cdn.kernel.org/pub/linux/kernel/v4.x/$pkg_full_name.tar.sign
+pkg_key=6092693E
+
+pkg_verify() {
+    tarball=`basename $pkg_tarball`
+    signature=`basename $pkg_signature`
+    rm -rf $pkg_full_name.tar
+    unxz $tarball
+    gpg2 -k $pkg_key 1>/dev/null || gpg2 --recv-keys $pkg_key
+    gpg2 --verify $signature
+}
+
+pkg_extract() {
+    tar -xf $pkg_full_name.tar
+}
+
+pkg_build() {
+  make mrproper
+  make INSTALL_HDR_PATH=dest headers_install
+  $pkg_sudo cp -rv dest/include/* /tools/include
+}

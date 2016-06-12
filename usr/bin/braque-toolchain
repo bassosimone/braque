@@ -1,0 +1,6 @@
+#!/bin/sh
+set -e
+pkg_rootdir=$(cd $(dirname $(dirname $(dirname $0))) && pwd -P)
+export PATH=/tools/bin:$PATH
+export pkg_toolchain=toolchain
+$pkg_rootdir/usr/bin/braque "$@"

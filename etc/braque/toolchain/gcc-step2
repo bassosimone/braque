@@ -1,0 +1,38 @@
+pkg_full_name=gcc-5.3.0
+pkg_tarball=https://ftp.gnu.org/gnu/gcc/$pkg_full_name/$pkg_full_name.tar.gz
+pkg_signature=$pkg_tarball.sig
+pkg_key=981C74C7
+pkg_configure_flags="$pkg_configure_flags --prefix=/tools"
+pkg_configure_flags="$pkg_configure_flags --with-local-prefix=/tools"
+pkg_configure_flags="$pkg_configure_flags --with-native-system-header-dir=/tools/include"
+pkg_configure_flags="$pkg_configure_flags --enable-languages=c,c++"
+pkg_configure_flags="$pkg_configure_flags --disable-libstdcxx-pch"
+pkg_configure_flags="$pkg_configure_flags --disable-multilib"
+pkg_configure_flags="$pkg_configure_flags --disable-bootstrap"
+pkg_configure_flags="$pkg_configure_flags --disable-libgomp"
+pkg_configure_flags="$pkg_configure_flags --with-gmp=/tools"
+pkg_configure_flags="$pkg_configure_flags --with-mpfr=/tools"
+pkg_configure_flags="$pkg_configure_flags --with-mpc=/tools"
+export CC=x86_64-lfs-linux-gnu-gcc
+export CXX=x86_64-lfs-linux-gnu-g++
+export AR=x86_64-lfs-linux-gnu-ar
+export RANLIB=x86_64-lfs-linux-gnu-ranlib
+
+pkg_patch() {
+  cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
+    `dirname $(x86_64-lfs-linux-gnu-gcc -print-libgcc-file-name)`/include-fixed/limits.h
+
+  for file in \
+    $(find gcc/config -name linux64.h -o -name linux.h -o -name sysv4.h)
+  do
+    cp -uv $file $file.orig
+    sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' \
+        -e 's@/usr@/tools@g' $file.orig > $file
+    echo '
+#undef STANDARD_STARTFILE_PREFIX_1
+#undef STANDARD_STARTFILE_PREFIX_2
+#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
+    touch $file.orig
+  done
+}

@@ -1,0 +1,11 @@
+pkg_full_name=mpfr-3.1.3
+pkg_tarball=https://ftp.gnu.org/gnu/mpfr/$pkg_full_name.tar.gz
+pkg_signature=$pkg_tarball.sig
+pkg_pgp_key=98C3739D
+pkg_configure_flags="$pkg_configure_flags --prefix=/tools"
+pkg_configure_flags="$pkg_configure_flags --with-sysroot=/tools"
+pkg_configure_flags="$pkg_configure_flags --with-gmp=/tools"
+export CC=x86_64-lfs-linux-gnu-gcc
+export CXX=x86_64-lfs-linux-gnu-g++
+export AR=x86_64-lfs-linux-gnu-ar
+export RANLIB=x86_64-lfs-linux-gnu-ranlib

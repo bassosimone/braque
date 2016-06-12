@@ -1,0 +1,10 @@
+pkg_full_name=binutils-2.26
+pkg_tarball=https://ftp.gnu.org/gnu/binutils/$pkg_full_name.tar.gz
+pkg_signature=$pkg_tarball.sig
+pkg_key=4AE55E93
+pkg_configure_flags="$pkg_configure_flags --prefix=/tools"
+pkg_configure_flags="$pkg_configure_flags --with-sysroot=/"
+pkg_configure_flags="$pkg_configure_flags --with-lib-path=/tools/lib"
+pkg_configure_flags="$pkg_configure_flags --target=x86_64-lfs-linux-gnu"
+pkg_configure_flags="$pkg_configure_flags --disable-nls"
+pkg_configure_flags="$pkg_configure_flags --disable-werror"

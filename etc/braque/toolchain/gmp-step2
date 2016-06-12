@@ -1,0 +1,10 @@
+pkg_full_name=gmp-6.1.0
+pkg_tarball=https://ftp.gnu.org/gnu/gmp/$pkg_full_name.tar.bz2
+pkg_signature=$pkg_tarball.sig
+pkg_key=28C67298
+pkg_configure_flags="$pkg_configure_flags --prefix=/tools"
+pkg_configure_flags="$pkg_configure_flags --with-sysroot=/tools"
+export CC=x86_64-lfs-linux-gnu-gcc
+export CXX=x86_64-lfs-linux-gnu-g++
+export AR=x86_64-lfs-linux-gnu-ar
+export RANLIB=x86_64-lfs-linux-gnu-ranlib

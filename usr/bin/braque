@@ -1,0 +1,57 @@
+#!/bin/sh
+set -e
+
+pkg_rootdir=$(cd $(dirname $(dirname $(dirname $0))) && pwd -P)
+if [ $# -ne 1 ]; then
+    echo "usage: $0 spec-name" 1>&2
+    exit 1
+fi
+
+export LC_ALL=C
+
+pkg_configure_flags=""
+pkg_make_flags="-j$(nproc)"
+pkg_sudo=sudo
+
+pkg_verify() {
+    gpg2 --verify $signature
+}
+
+pkg_extract() {
+    rm -rf $pkg_full_name
+    tar -xf $tarball
+}
+
+pkg_patch() {
+    echo "No patches available."
+}
+
+pkg_build() {
+    mkdir build
+    cd build
+    ../configure $pkg_configure_flags
+    make $pkg_make_flags
+    $pkg_sudo make install $pkg_make_flags PATH=$PATH
+}
+
+pkg_finalize() {
+    echo "Build complete."
+}
+
+cd `mktemp -d`
+. $pkg_rootdir/etc/braque/$pkg_toolchain/$1
+tarball=`basename $pkg_tarball`
+signature=`basename $pkg_signature`
+if [ ! -f $pkg_rootdir/var/cache/braque/$tarball ]; then
+    curl -# -o $pkg_rootdir/var/cache/braque/$tarball $pkg_tarball
+    curl -# -o $pkg_rootdir/var/cache/braque/$signature $pkg_signature
+fi
+cp -v $pkg_rootdir/var/cache/braque/$tarball $tarball
+cp -v $pkg_rootdir/var/cache/braque/$signature $signature
+gpg2 -k $pkg_key 1>/dev/null || gpg2 --recv-keys $pkg_key
+pkg_verify
+pkg_extract
+cd $pkg_full_name
+pkg_patch
+pkg_build
+pkg_finalize

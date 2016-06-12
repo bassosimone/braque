@@ -1,0 +1,20 @@
+pkg_full_name=gcc-5.3.0
+pkg_tarball=https://ftp.gnu.org/gnu/gcc/$pkg_full_name/$pkg_full_name.tar.gz
+pkg_signature=$pkg_tarball.sig
+pkg_key=981C74C7
+
+pkg_build() {
+    mkdir build
+    cd build
+    ../libstdc++-v3/configure                                                  \
+    	--host=x86_64-lfs-linux-gnu                                            \
+    	--prefix=/tools                                                        \
+    	--disable-multilib                                                     \
+    	--disable-nls                                                          \
+    	--disable-libstdcxx-threads                                            \
+    	--disable-libstdcxx-pch                                                \
+    	--with-gxx-include-dir=/tools/x86_64-lfs-linux-gnu/include/c++/5.3.0   \
+    	$pkg_configure_flags
+    make $pkg_make_flags
+    $pkg_sudo make install $pkg_make_flags PATH=$PATH
+}

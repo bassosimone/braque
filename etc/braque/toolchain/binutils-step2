@@ -1,0 +1,20 @@
+pkg_full_name=binutils-2.26
+pkg_tarball=https://ftp.gnu.org/gnu/binutils/$pkg_full_name.tar.gz
+pkg_signature=$pkg_tarball.sig
+pkg_key=4AE55E93
+
+export CC=x86_64-lfs-linux-gnu-gcc
+export AR=x86_64-lfs-linux-gnu-ar
+export RANLIB=x86_64-lfs-linux-gnu-ranlib
+
+pkg_configure_flags="$pkg_configure_flags --prefix=/tools"
+pkg_configure_flags="$pkg_configure_flags --disable-nls"
+pkg_configure_flags="$pkg_configure_flags --disable-werror"
+pkg_configure_flags="$pkg_configure_flags --with-lib-path=/tools/lib"
+pkg_configure_flags="$pkg_configure_flags --with-sysroot"
+
+pkg_finalize() {
+    make -C ld clean
+    make -C ld LIB_PATH=/usr/lib:/lib
+    $pkg_sudo cp -v ld/ld-new /tools/bin
+}
