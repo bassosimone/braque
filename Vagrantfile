@@ -8,7 +8,7 @@ Vagrant.configure(2) do |config|
     end
     trusty64.vm.provision "shell", inline: <<-SHELL
       cd /braque
-      ./usr/lib/braque/provision/trusty64
+      ./usr/lib/braque/provision-trusty64
     SHELL
   end
 end
